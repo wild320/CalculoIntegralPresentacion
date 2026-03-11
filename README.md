@@ -12,7 +12,7 @@ Bienvenido al repositorio de la **Presentación Interactiva de Cálculo Integral
 
 ## 🗂️ Temáticas Desarrolladas
 
-La plataforma está dotada con 5 temáticas distintas (basadas en los requerimientos de la asignatura Código 100411):
+La plataforma está dotada con 5 temáticas distintas (basadas en los requerimientos de la asignatura):
 1.  **Antiderivadas:** Explicación intensiva usando reglas de Linealidad y Trigonométricas (\(\int (t^2 + \sec^2 t)dt\)).
 2.  **Sumas de Riemann:** Construcción desde sus cimientos algebraicos de los términos \(\Delta x\) y \(x_i\), mostrando evaluaciones subíndices y conclusiones de particiones al acercarse al infinito.
 3.  **Integral Definida:** Paso a paso extendido de una división y evaluación polinomial apoyada en el Teorema Fundamental del Cálculo.
