@@ -100,6 +100,12 @@
         }
         .btn-tour:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(167, 139, 250, 0.4); }
 
+        /* Mobile Menu Toggle */
+        .mobile-toggle {
+            display: none; background: transparent; border: none; color: var(--text);
+            font-size: 1.5rem; cursor: pointer; padding: 0.5rem;
+        }
+
         .theme-tabs { display:flex; gap:0.5rem; background: rgba(255,255,255,0.03); padding: 0.3rem; border-radius: 12px; border: 1px solid var(--border); }
         .theme-tabs button {
             background:transparent; border:none; color:var(--dim);
@@ -243,8 +249,14 @@
 
         /* ================= RESPONSIVE DESIGN ================= */
         @media (max-width: 768px) {
-            .topbar { flex-direction: column; gap: 1rem; padding: 1rem; }
-            .topbar-actions { flex-direction: column; width: 100%; }
+            .topbar { flex-wrap: wrap; padding: 1rem; }
+            .mobile-toggle { display: block; }
+            .topbar-actions { 
+                display: none; flex-direction: column; width: 100%; 
+                padding-top: 1rem; border-top: 1px solid var(--border); margin-top: 0.5rem;
+            }
+            .topbar-actions.show { display: flex; }
+            
             .theme-tabs { flex-wrap: wrap; justify-content: center; width: 100%; }
             .theme-tabs button { flex: 1; min-width: 45%; text-align: center; }
             .btn-tour { width: 100%; }
@@ -280,7 +292,8 @@
 <!-- TOP BAR -->
 <div class="topbar">
     <div class="logo">Cálculo<span>Integral</span></div>
-    <div class="topbar-actions">
+    <button class="mobile-toggle" id="mobileToggle">☰</button>
+    <div class="topbar-actions" id="topbarActions">
         <div class="theme-tabs" id="themeTabs">
             <button class="active" data-theme="0">① Antiderivadas</button>
             <button data-theme="1">② Riemann</button>
@@ -928,6 +941,13 @@
     });
 
     document.getElementById('btnTour').addEventListener('click', () => { tourObj.drive(); });
+
+    // JS Mobile Menu Toggle
+    const mobileToggle = document.getElementById('mobileToggle');
+    const topbarActions = document.getElementById('topbarActions');
+    mobileToggle.addEventListener('click', () => {
+        topbarActions.classList.toggle('show');
+    });
 
     // JS Nav Logic
     let currentTheme = 0;
