@@ -1,169 +1,1044 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CalculusVibe - Tarea 2 Integral</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-  </head>
-  <body class="dark-theme">
-    <div class="background-blobs">
-      <div class="blob blob-1"></div>
-      <div class="blob blob-2"></div>
-      <div class="blob blob-3"></div>
-    </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarea 2 Completa - Letra A - Premium</title>
+    
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- MathJax -->
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(','\\)']], displayMath: [['$$','$$']] },
+            startup: { pageReady: () => MathJax.startup.defaultPageReady() }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <nav class="navbar">
-      <div class="logo">
-        <i data-lucide="calculator"></i>
-        <span>Calculus<span>Vibe</span></span>
-      </div>
-      <div class="nav-links">
-        <button class="nav-btn active" data-tab="riemann">
-          Sumas de Riemann
-        </button>
-        <button class="nav-btn" data-tab="integral">Integral Definida</button>
-        <button class="nav-btn" data-tab="physics">Aplicaciones</button>
-      </div>
+    <!-- Tooltips (Tippy.js) & Guía (Driver.js) -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/shift-away.css" />
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css" />
+    
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"/>
+
+    <!-- Chart.js para generación automática de gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            /* Paleta Soft Premium (Dark) */
+            --bg: #13141A;
+            --bg-blobs: #1B1D26;
+            --card: rgba(28, 29, 38, 0.65);
+            --card-hover: rgba(36, 38, 50, 0.85);
+            
+            --primary: #818CF8; /* Soft Indigo */
+            --primary-glow: rgba(129, 140, 248, 0.2);
+            --secondary: #A78BFA; /* Soft Purple */
+            --accent: #38BDF8; /* Soft Sky */
+            --green: #34D399; /* Soft Mint */
+            --orange: #FB923C; /* Soft Peach */
+            --red: #F87171; /* Soft Coral */
+            
+            --text: #F1F5F9;
+            --dim: #94A3B8;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-highlight: rgba(255, 255, 255, 0.12);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter', sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+        h1, h2, h3, h4 { font-family:'Outfit', sans-serif; font-weight: 500; }
+        
+        /* Soft Blobs Background */
+        .bg-blobs { position:fixed; inset:0; z-index:-1; filter:blur(120px); opacity:0.6; pointer-events:none; }
+        .blob { position:absolute; border-radius:100%; }
+        .b1 { width:60vw; height:60vh; background:radial-gradient(circle, var(--primary) 0%, transparent 70%); top:-20vh; right:-10vw; opacity: 0.3; }
+        .b2 { width:50vw; height:50vh; background:radial-gradient(circle, var(--secondary) 0%, transparent 70%); bottom:-20vh; left:-10vw; opacity: 0.2; }
+
+        /* Top Bar */
+        .topbar {
+            position:sticky; top:0; z-index:100;
+            display:flex; align-items:center; justify-content:space-between;
+            padding:1rem 4%;
+            background:rgba(19, 20, 26, 0.75); backdrop-filter:blur(16px);
+            border-bottom:1px solid var(--border);
+        }
+        .topbar .logo { font-family:'Outfit'; font-weight:700; font-size:1.2rem; color:var(--text); letter-spacing: -0.5px; }
+        .topbar .logo span { color:var(--primary); font-weight: 400; }
+        
+        .topbar-actions { display: flex; gap: 1rem; align-items: center; }
+        .btn-tour {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none; color: #fff; padding: 0.5rem 1.2rem; border-radius: 50px;
+            font-family: 'Outfit'; font-weight: 600; font-size: 0.85rem; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+        .btn-tour:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(167, 139, 250, 0.4); }
+
+        .theme-tabs { display:flex; gap:0.5rem; background: rgba(255,255,255,0.03); padding: 0.3rem; border-radius: 12px; border: 1px solid var(--border); }
+        .theme-tabs button {
+            background:transparent; border:none; color:var(--dim);
+            padding:0.5rem 1.2rem; border-radius:8px; cursor:pointer;
+            font-family:'Outfit'; font-weight:500; font-size:0.85rem; transition:all 0.3s ease;
+        }
+        .theme-tabs button:hover { color:var(--text); background: rgba(255,255,255,0.05); }
+        .theme-tabs button.active { background:var(--card-hover); color:var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid var(--border-highlight); }
+
+        /* Header / Titles */
+        header { text-align:center; padding:3.5rem 2rem 1.5rem; }
+        header .badge {
+            display:inline-block; padding:0.4rem 1.2rem; border-radius:50px;
+            font-size:0.75rem; font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-bottom:1rem;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-highlight); color: var(--dim);
+        }
+        header h1 { font-size:2.8rem; font-weight: 600; margin-bottom:0.5rem; color: var(--text); letter-spacing:-1px; }
+        header p { color:var(--dim); font-size:1.05rem; font-weight: 300; }
+
+        /* Slide Navigation */
+        .slide-nav { display:flex; justify-content:center; gap:0.5rem; padding:0 2rem 2rem; flex-wrap:wrap; }
+        .slide-nav button {
+            background:transparent; border:1px solid var(--border); color:var(--dim);
+            padding:0.5rem 1.2rem; border-radius:50px; cursor:pointer;
+            font-family:'Inter'; font-weight:500; font-size:0.85rem; transition:all 0.3s ease;
+        }
+        .slide-nav button:hover { border-color:var(--dim); color:var(--text); }
+        .slide-nav button.active { background:var(--text); border-color:var(--text); color:var(--bg); }
+
+        /* Timeline Slide Navigation (Solo para Video) */
+        .timeline-nav { 
+            display: flex; justify-content: space-between; position: relative; 
+            max-width: 800px; margin: 1rem auto 3rem; padding: 0 5%;
+        }
+        .timeline-nav::before {
+            content: ''; position: absolute; top: 18px; left: 5%; right: 5%;
+            height: 4px; background: rgba(255,255,255,0.05); z-index: 1; border-radius: 4px;
+        }
+        .timeline-nav .progress-line {
+            position: absolute; top: 18px; left: 5%; height: 4px; border-radius: 4px;
+            background: var(--primary); z-index: 2; transition: width 0.4s ease; width: 0%;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+        .timeline-nav button {
+            background: var(--bg); border: 2px solid var(--border); color: var(--dim);
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            font-family: 'Outfit'; font-weight: 600; font-size: 1.1rem; 
+            transition: all 0.3s ease; position: relative; z-index: 3;
+            display: flex; align-items: center; justify-content: center; padding: 0;
+        }
+        .timeline-nav button:hover { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); color: var(--text); }
+        .timeline-nav button.active { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 0 20px var(--primary-glow); transform: scale(1.1); }
+        .timeline-nav button.completed { border-color: var(--primary); color: var(--primary); }
+
+        /* Content Area */
+        .content { max-width:900px; margin:0 auto; padding:0 2rem 4rem; }
+        .exercise-section { display:none; animation:fadeIn 0.5s ease; }
+        .exercise-section.active { display:block; }
+        .slide { display:none; animation:slideUp 0.4s ease forwards; opacity: 0; transform: translateY(15px); }
+        .slide.active { display:block; }
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        @keyframes slideUp { to { opacity:1; transform:translateY(0); } }
+
+        /* Main Cards */
+        .card {
+            background:var(--card); backdrop-filter:blur(20px);
+            border:1px solid var(--border); border-radius:24px;
+            padding:2.5rem 3rem; margin-bottom:1.5rem;
+            box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5);
+            transition: border-color 0.3s;
+        }
+        .card:hover { border-color: var(--border-highlight); }
+        .card h2 { font-size:1.5rem; margin-bottom:1.2rem; display: flex; align-items: center; gap: 0.5rem; }
+        .card h3 { font-size:1.1rem; margin:1.8rem 0 0.8rem; color: var(--primary); font-weight: 500; }
+        .card p, .card li { line-height:1.8; color:var(--dim); font-size:1rem; font-weight: 300; }
+        .card ul { padding-left:1.5rem; margin-top: 0.5rem; }
+        .card li { margin-bottom:0.5rem; }
+
+        /* Interactive Element (Tooltip Target) */
+        .hint-word {
+            color: var(--text); font-weight: 500; border-bottom: 1px dashed var(--dim); cursor: help; transition: color 0.3s, border-color 0.3s;
+        }
+        .hint-word:hover { color: var(--accent); border-color: var(--accent); }
+
+        /* Math Blocks */
+        .mb {
+            background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-left: 3px solid var(--primary);
+            border-radius: 8px 16px 16px 8px; padding: 1.2rem 1.5rem; margin: 1.2rem 0;
+            overflow-x: auto; font-size: 1.1rem; color: var(--text);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .mb.green { border-left-color: var(--green); } .mb.cyan { border-left-color: var(--accent); } .mb.orange { border-left-color: var(--orange); }
+        
+        /* Tables */
+        table { width:100%; border-collapse: separate; border-spacing: 0; margin: 1.5rem 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+        th { background: rgba(0,0,0,0.3); color: var(--text); padding: 0.8rem 1rem; text-align: left; font-family: 'Outfit'; font-weight: 500; border-bottom: 1px solid var(--border); }
+        td { padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); color: var(--dim); font-weight: 300; }
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) td { background: rgba(255,255,255,0.01); }
+
+        /* Highlight / Result Boxes */
+        .hl { background: linear-gradient(135deg, rgba(129, 140, 248, 0.05), rgba(56, 189, 248, 0.05)); border: 1px solid var(--border-highlight); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; text-align: center; }
+        .hl .big { font-size: 1.8rem; font-weight: 600; font-family: 'Outfit'; color: var(--accent); margin-top: 0.5rem; }
+        
+        .rb { background: rgba(52, 211, 153, 0.05); border: 1px solid rgba(52, 211, 153, 0.2); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; }
+        .rb .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--green); font-weight: 600; margin-bottom: 0.5rem; font-family: 'Outfit'; }
+
+        .wb { background: rgba(251, 146, 60, 0.05); border: 1px solid rgba(251, 146, 60, 0.2); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; }
+        .wb .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--orange); font-weight: 600; margin-bottom: 0.5rem; font-family: 'Outfit'; }
+
+        /* Bottom Nav */
+        .bottom-nav { display:flex; justify-content:space-between; max-width:900px; margin:0 auto; padding:0 2rem 3rem; }
+        .bottom-nav button { background:var(--card); border:1px solid var(--border); color:var(--text); padding:0.8rem 1.8rem; border-radius:12px; cursor:pointer; font-family:'Inter'; font-weight:500; font-size:0.9rem; transition:all 0.3s; }
+        .bottom-nav button:hover { background: rgba(255,255,255,0.05); border-color: var(--border-highlight); }
+
+        footer { text-align:center; padding:2rem; color:rgba(255,255,255,0.2); font-size:0.8rem; border-top:1px solid var(--border); font-weight: 300; }
+        code { background:rgba(0,0,0,0.3); padding:0.2rem 0.5rem; border-radius:6px; font-size:0.85rem; color:var(--text); border: 1px solid var(--border); }
+        .step-badge { display:inline-flex; align-items: center; justify-content: center; background:var(--card-hover); color:var(--text); width:28px; height:28px; border-radius:8px; font-size:0.8rem; font-weight:600; margin-right:0.5rem; border: 1px solid var(--border); }
+
+        /* Driver.js Customization */
+        .driver-popover { border-radius: 16px !important; background: var(--bg) !important; color: var(--text) !important; border: 1px solid var(--border-highlight) !important; box-shadow: 0 20px 40px rgba(0,0,0,0.5) !important; font-family: 'Inter', sans-serif !important; }
+        .driver-popover-title { font-family: 'Outfit', sans-serif !important; color: var(--primary) !important; font-weight: 600 !important; font-size: 1.1rem !important; }
+        .driver-popover-description { color: var(--dim) !important; font-weight: 300 !important; font-size: 0.95rem !important; }
+        .driver-popover-footer button { border-radius: 8px !important; background: var(--card) !important; color: var(--text) !important; border: 1px solid var(--border) !important; text-shadow: none !important; }
+        .driver-popover-footer button:hover { background: var(--primary) !important; color: white !important; border-color: var(--primary) !important; }
+
+        /* Uploader Placeholders */
+        .geo-placeholder {
+            width: 100%; min-height: 250px;
+            background: rgba(255,255,255,0.02); border: 2px dashed var(--dim); border-radius: 16px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--dim); font-size: 1rem; cursor: pointer; transition: all 0.3s;
+            overflow: hidden; position: relative; padding: 2rem; text-align: center;
+            margin-top: 1rem;
+        }
+        .geo-placeholder:hover { border-color: var(--primary); color: var(--text); background: rgba(255,255,255,0.05); }
+        .geo-placeholder input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 20; }
+        .geo-placeholder img { max-width: 100%; height: auto; border-radius: 12px; display: none; object-fit: contain; z-index: 10; position: relative; }
+        .geo-placeholder.has-image { border: none; background: transparent; padding: 0; }
+        .geo-placeholder.has-image .placeholder-content { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="bg-blobs"><div class="blob b1"></div><div class="blob b2"></div></div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="logo">Cálculo<span>Integral</span></div>
+    <div class="topbar-actions">
+        <div class="theme-tabs" id="themeTabs">
+            <button class="active" data-theme="0">① Antiderivadas</button>
+            <button data-theme="1">② Riemann</button>
+            <button data-theme="2">③ Int. Definida</button>
+            <button data-theme="3">④ Aplicaciones</button>
+            <button data-theme="4">⑤ Video Sust.</button>
+        </div>
+        <button class="btn-tour" id="btnTour">✨ Guía Paso a Paso</button>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- EXERCISE 1: ANTIDERIVADAS                                      -->
+<!-- ============================================================ -->
+<div class="exercise-section active" data-theme="0">
+    <header>
+        <div class="badge">Temática 1</div>
+        <h1 id="title-ej">Antiderivadas</h1>
+        <p>Ejercicio A · \(\displaystyle\int (t^2 + \sec^2 t)\,dt\)</p>
+    </header>
+
+    <nav class="slide-nav" data-group="0" id="navSteps">
+        <button class="active" data-slide="0" data-tippy-content="Paso 1: Análisis Inicial">1. Análisis Inicial</button>
+        <button data-slide="1" data-tippy-content="Paso 2: Linealidad">2. Linealidad</button>
+        <button data-slide="2" data-tippy-content="Paso 3: Término Algebráico">3. Término Algebráico</button>
+        <button data-slide="3" data-tippy-content="Paso 4: Término Trigonométrico">4. Término Trigonométrico</button>
+        <button data-slide="4" data-tippy-content="Paso 5: Unificación Final">5. Unificación Final</button>
+        <button data-slide="5" data-tippy-content="Paso 6: Verificación">6. Verificación</button>
+        <button data-slide="6" data-tippy-content="Paso 7: Comprobación GeoGebra">7. GeoGebra</button>
+        <button data-slide="7" data-tippy-content="Paso 8: Gráfica Interactiva">8. Gráfica</button>
     </nav>
 
-    <main class="container">
-      <!-- Riemann Section -->
-      <section id="riemann" class="tab-content active">
-        <div class="hero">
-          <h1>Visualizador de Riemann</h1>
-          <div class="letter-selector">
-            <button class="l-btn active" data-letter="A">A</button>
-            <button class="l-btn" data-letter="B">B</button>
-            <button class="l-btn" data-letter="C">C</button>
-            <button class="l-btn" data-letter="D">D</button>
-            <button class="l-btn" data-letter="E">E</button>
-          </div>
-          <p id="riemann-desc">Aproximación de áreas mediante rectángulos</p>
+    <div class="content" data-group="0" id="mainCard">
+        <div class="slide active" data-index="0">
+            <div class="card">
+                <h2>📋 1. Análisis Inicial del Enunciado</h2>
+                <p>Nuestra integral original está compuesta por dos funciones diferentes sumadas. Debido a la restricción del ejercicio, debemos evitar métodos complejos (como sustitución o partes).</p>
+                <div class="mb">$$ \int \left( t^2 + \sec^2 t \right) dt $$</div>
+                <h3>Estrategia a Seguir:</h3>
+                <ul>
+                    <li>El primer término, \(t^2\), es algebraico y obedece a las reglas de los polinomios.</li>
+                    <li>El segundo término, \(\sec^2 t\), es trigonométrico.</li>
+                    <li>La clave es usar la <span class="hint-word" data-tippy-content="Propiedad de Linealidad: ∫(f(x) ± g(x))dx = ∫f(x)dx ± ∫g(x)dx">Linealidad de la Integral</span> para dividir este problema complejo en dos problemas elementales que se encuentran en tablas directas.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide" data-index="1">
+            <div class="card">
+                <h2>✂️ 2. Propiedad de Linealidad</h2>
+                <p>Basado en las propiedades fundamentales algebraicas de las integrales indefinidas, la integral de una suma es exactamente igual a la suma de las integrales de cada función.</p>
+                <div class="mb cyan">$$ \int \left[ f(t) + g(t) \right] dt = \int f(t)\,dt + \int g(t)\,dt $$</div>
+                <p>Aplicando esto a nuestro ejercicio, obtenemos dos integrales separadas:</p>
+                <div class="mb">$$ = \int t^2\,dt \quad + \quad \int \sec^2 t\,dt $$</div>
+                <p>Esto simplifica inmensamente el trabajo, permitiéndonos evaluar cada una de forma totalmente independiente.</p>
+            </div>
+        </div>
+        
+        <div class="slide" data-index="2">
+            <div class="card">
+                <h2>🔢 3. Integrando el término Algebráico</h2>
+                <p>Tomamos la primera integral parcial: \( \int t^2\,dt \)</p>
+                <p>Dado que es un polinomio (una variable elevada a un exponente constante numérico), usamos la <span class="hint-word" data-tippy-content="Para todo n ≠ -1, la integral de xⁿ es (xⁿ⁺¹) / (n+1).">Regla de la Potencia para Integrales</span>. Identificamos nuestro exponente como \(n = 2\).</p>
+                <div class="mb cyan">$$ \int t^n\,dt = \frac{t^{n+1}}{n+1} + C_1 $$</div>
+                <p>Reescribiendo paso a paso con \(n=2\):</p>
+                <div class="mb">$$ \int t^2\,dt = \frac{t^{2+1}}{2+1} + C_1 = \frac{t^3}{3} + C_1 $$</div>
+                <p style="font-size:0.85rem; color:var(--dim); margin-top:0.5rem"><i>Nota: Identificamos su constante de integración temporalmente como \(C_1\).</i></p>
+            </div>
         </div>
 
-        <div class="grid">
-          <div class="card glass">
-            <h3>Controles</h3>
-            <div class="input-group">
-              <label>Función f(x)</label>
-              <input
-                type="text"
-                id="fn-input"
-                value="sqrt(x+1)"
-                placeholder="e.g. x^2"
-              />
+        <div class="slide" data-index="3">
+            <div class="card">
+                <h2>📐 4. Integrando el término Trigonométrico</h2>
+                <p>Tomamos la segunda integral parcial: \( \int \sec^2 t\,dt \)</p>
+                <p>Aquí acudimos a las reglas inversas de derivación trigonométrica. Recuerda en cálculo diferencial cuál es la función cuya derivada da como resultado \(\sec^2 t\):</p>
+                <div class="mb cyan">$$ \frac{d}{dt} \left( \tan t \right) = \sec^2 t $$</div>
+                <p>Ya que la integración (antiderivada) es un proceso inverso a la derivación, logramos regresar a la función matriz de forma directa y sin utilizar "Sustitución".</p>
+                <div class="mb">$$ \int \sec^2 t\,dt = \tan t + C_2 $$</div>
+                <p style="font-size:0.85rem; color:var(--dim); margin-top:0.5rem"><i>Nota: Identificamos su constante de integración temporalmente como \(C_2\).</i></p>
             </div>
-            <div class="row">
-              <div class="input-group">
-                <label>Inicio (a)</label>
-                <input type="number" id="a-input" value="0" />
-              </div>
-              <div class="input-group">
-                <label>Fin (b)</label>
-                <input type="number" id="b-input" value="3" />
-              </div>
-            </div>
-            <div class="input-group">
-              <label>Particiones (n): <span id="n-val">3</span></label>
-              <input type="range" id="n-input" min="1" max="100" value="3" />
-            </div>
-            <div class="input-group">
-              <label>Método</label>
-              <select id="method-input">
-                <option value="right">Derecha (Rₙ)</option>
-                <option value="left">Izquierda (Lₙ)</option>
-                <option value="midpoint">Punto Medio</option>
-              </select>
-            </div>
-            <div class="stats">
-              <div class="stat-item">
-                <span class="stat-label">Área Aproximada</span>
-                <span class="stat-value" id="riemann-res">0.000</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="card glass chart-card">
-            <canvas id="riemannChart"></canvas>
-          </div>
         </div>
-      </section>
 
-      <!-- Integral Section -->
-      <section id="integral" class="tab-content">
-        <div class="hero">
-          <h1>Integral Definida</h1>
-          <p>Cálculo exacto del área bajo la curva</p>
-        </div>
-        <div class="grid">
-          <div class="card glass">
-            <h3>Ejercicio A</h3>
-            <p class="math-display">∫₁⁸ [(x²+1)(x²-2) / ∛x²] dx</p>
-            <p>
-              Visualiza el comportamiento de la función y el área comprendida en
-              el intervalo [1, 8].
-            </p>
-            <div class="stats">
-              <div class="stat-item">
-                <span class="stat-label">Área Total</span>
-                <span class="stat-value">~1829.8</span>
-              </div>
+        <div class="slide" data-index="4">
+            <div class="card">
+                <h2>🎯 5. Unificación y Resultado Final</h2>
+                <p>Ahora tomamos los resultados hallados en los pasos 3 y 4 y los sumamos como lo pedía el paso 2.</p>
+                <div class="mb">$$ \left( \frac{t^3}{3} + C_1 \right) + \left( \tan t + C_2 \right) $$</div>
+                <div class="wb">
+                    <p>Las componentes constantes \(C_1\) y \(C_2\) representan números arbitrarios. La suma de dos números desconocidos es simplemente otro número constante. Por estética matemática, las fusionamos en una sola y única constante global de integración: <strong style="color:var(--orange)">\(C\)</strong>.</p>
+                </div>
+                <div class="hl">
+                    <p style="color:var(--dim);font-size:0.85rem;letter-spacing:1px;margin-bottom:0.5rem">LA ANTIDERIVADA COMPLETA ES:</p>
+                    <div class="big">$$ F(t) = \frac{t^3}{3} + \tan t + C $$</div>
+                </div>
             </div>
-          </div>
-          <div class="card glass chart-card">
-            <canvas id="integralChart"></canvas>
-          </div>
         </div>
-      </section>
-
-      <!-- Physics Section -->
-      <section id="physics" class="tab-content">
-        <div class="hero">
-          <h1>Aplicación Física</h1>
-          <p>Velocidad vs Distancia</p>
-        </div>
-        <div class="grid">
-          <div class="card glass">
-            <h3>Velocidad v(t) = 3t² - 6t</h3>
-            <p>
-              Integrando el valor absoluto de la velocidad obtenemos la
-              distancia total recorrida.
-            </p>
-            <div class="stats">
-              <div class="stat-item">
-                <span class="stat-label">Distancia Total</span>
-                <span class="stat-value">24 m</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Desplazamiento</span>
-                <span class="stat-value">16 m</span>
-              </div>
+        
+        <div class="slide" data-index="5">
+            <div class="card">
+                <h2>✔️ 6. Verificación por Derivación</h2>
+                <p>El enunciado exige comprobar analíticamente que la solución es correcta. Derivamos la función resultante, \(F(t)\), para buscar retornar al integrando original.</p>
+                <div class="mb">$$ \frac{d}{dt}\left[ \frac{t^3}{3} + \tan t + C \right] $$</div>
+                <p>Aplicamos linealidad (esta vez de la derivación):</p>
+                <div class="mb">$$ = \frac{1}{3} \cdot \frac{d}{dt}(t^3) \quad+\quad \frac{d}{dt}(\tan t) \quad+\quad \frac{d}{dt}(C) $$</div>
+                <div class="mb green">$$ = \frac{1}{3}(3t^2) \quad+\quad \sec^2 t \quad+\quad 0 $$</div>
+                <p>Cancelando los "3":</p>
+                <div class="mb green">$$ = t^2 + \sec^2 t $$</div>
+                <div class="rb">
+                    <div class="label">Conclusión Exitosa</div>
+                    <p>Se ha comprobado matemáticamente que la función derivada vuelve a su estado integrando. La solución es correcta.</p>
+                </div>
             </div>
-          </div>
-          <div class="card glass chart-card">
-            <canvas id="physicsChart"></canvas>
-          </div>
         </div>
-      </section>
-    </main>
 
-    <footer class="glass">
-      <p>© 2024 UNAD - Cálculo Integral | Diseño por Antigravity</p>
-    </footer>
+        <div class="slide" data-index="6">
+            <div class="card">
+                <h2>🖥️ 7. Guía para GeoGebra</h2>
+                <p>Abre el software e ingresa los siguientes comandos exactamente como se muestran para tu reporte visual:</p>
+                <ul>
+                    <li><span class="step-badge">1</span> Define la función original: <code>f(x) = x^2 + (sec(x))^2</code></li>
+                    <li><span class="step-badge">2</span> Calcula la integral (Verás que el software coincide con lo que hallamos): <code>g(x) = Integral(f)</code></li>
+                    <li><span class="step-badge">3</span> Verifica derivando: <code>Derivada(g)</code></li>
+                </ul>
+            </div>
+        </div>
 
-    <script src="main.js"></script>
-    <script>
-      lucide.createIcons();
-    </script>
-  </body>
+        <div class="slide" data-index="7">
+            <div class="card">
+                <h2>🖼️ 8. Visualización de la Gráfica</h2>
+                <p>Gráfica de la función original y su antiderivada renderizada automáticamente.</p>
+                <div style="width: 100%; height: 350px; position: relative; margin-top:1rem;">
+                    <canvas id="chartT1"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- EXERCISE 2: SUMAS DE RIEMANN                                   -->
+<!-- ============================================================ -->
+<div class="exercise-section" data-theme="1">
+    <header>
+        <div class="badge">Temática 2</div>
+        <h1>Sumas de Riemann</h1>
+        <p>Ejercicio A · \(f(x) = \sqrt{x+1}\) en \([0,3]\), \(n=3\)</p>
+    </header>
+
+    <nav class="slide-nav" data-group="1">
+        <button class="active" data-slide="0" data-tippy-content="Paso 1: Planteamiento Teórico">1. Planteamiento Teórico</button>
+        <button data-slide="1" data-tippy-content="Paso 2: Expresión de Δx y x_i">2. Δx y x_i</button>
+        <button data-slide="2" data-tippy-content="Paso 3: Límite Tendiendo a Infinito">3. Límite al Infinito</button>
+        <button data-slide="3" data-tippy-content="Paso 4: Cálculo Específico (n=3)">4. Cálculo (n=3)</button>
+        <button data-slide="4" data-tippy-content="Paso 5: Análisis con Rectángulos (n=5...15)">5. Análisis Particiones</button>
+        <button data-slide="5" data-tippy-content="Paso 6: Conclusión Analítica">6. Conclusión</button>
+        <button data-slide="6" data-tippy-content="Paso 7: Comandos en GeoGebra">7. GeoGebra</button>
+        <button data-slide="7" data-tippy-content="Paso 8: Gráfica Automática">8. Gráfica</button>
+    </nav>
+
+    <div class="content" data-group="1">
+        <div class="slide active" data-index="0">
+            <div class="card">
+                <h2>📋 1. Planteamiento Teórico del Modelo</h2>
+                <p>Las <span class="hint-word" data-tippy-content="Una técnica de integración numérica que aproxima el área utilizando sumas de áreas de múltiples rectángulos.">Sumas de Riemann</span> forman la base de la integral definida. Nos indican que el área exacta bajo una curva en un intervalo dado \([a,b]\) es el límite, cuando el número de rectángulos (\(n\)) tiende a infinito, de la suma de las áreas de dichos rectángulos.</p>
+                <div class="mb">$$ \int_a^b f(x)\,dx = \lim_{n \to \infty} \sum_{i=1}^{n} f(x_i) \cdot \Delta x $$</div>
+                <p>Para nuestro ejercicio, tenemos:</p>
+                <div class="mb">$$ f(x) = \sqrt{x+1} \quad ; \quad \text{Intervalo } [0,3] $$</div>
+            </div>
+        </div>
+
+        <div class="slide" data-index="1">
+            <div class="card">
+                <h2>📐 2. Procedimiento Algebraico (\(\Delta x\) y \(x_i\))</h2>
+                <p>Para construir la sumatoria genérica, debemos definir el ancho de cada subintervalo (\(\Delta x\)) y la posición general de cada evaluación evaluada por el <strong>extremo derecho</strong> (\(x_i\)), considerando un número \(n\) de particiones que aún no conocemos (lo dejaremos en forma algebraica).</p>
+                
+                <h3>A. Ancho Base (\(\Delta x\))</h3>
+                <div class="mb cyan">$$ \Delta x = \frac{b - a}{n} = \frac{3 - 0}{n} = \frac{3}{n} $$</div>
+                
+                <h3>B. Puntos de Evaluación Derechos (\(x_i\))</h3>
+                <p>Comenzando desde el inicio del intervalo (\(a=0\)), sumamos progresivamente anchos:</p>
+                <div class="mb cyan">$$ x_i = a + i \cdot \Delta x = 0 + i \left( \frac{3}{n} \right) = \frac{3i}{n} $$</div>
+            </div>
+        </div>
+
+        <div class="slide" data-index="2">
+            <div class="card">
+                <h2>♾️ 3. Expresión del Límite de la Suma</h2>
+                <p>Habiendo definido cómo se comportará \(\Delta x\) y \(x_i\) para un \(n\) abstracto, ingresamos estas definiciones dentro de la notación de la sumatoria usando nuestra función original \(f(x) = \sqrt{x+1}\):</p>
+                
+                <div class="mb">$$ Area = \lim_{n \to \infty} \sum_{i=1}^{n} f\left( \frac{3i}{n} \right) \cdot \left( \frac{3}{n} \right) $$</div>
+                <div class="mb">$$ Area = \lim_{n \to \infty} \sum_{i=1}^{n} \sqrt{\frac{3i}{n} + 1} \cdot \left( \frac{3}{n} \right) $$</div>
+                
+                <div class="wb">
+                    <p>Esta expresión algebraica resume perfectamente cómo computar el área con una infinita infinidad de rectángulos, pero para efectos de cálculos manuales, reducimos la complejidad acotando los casos como solicita el ejercicio (\(n=3\)).</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" data-index="3">
+            <div class="card">
+                <h2>🏆 4. Cálculo de la Suma para \(n=3\) (\(R_3\))</h2>
+                <p>Ahora concretamos. Al solicitar \(R_3\), fijamos \(n=3\). Repetimos la lógica pero con valor numérico:</p>
+                <ul>
+                    <li>\( \Delta x = \frac{3-0}{3} = \mathbf{1} \)</li>
+                    <li>\( x_1 = 0 + 1(1) = \mathbf{1} \)</li>
+                    <li>\( x_2 = 0 + 2(1) = \mathbf{2} \)</li>
+                    <li>\( x_3 = 0 + 3(1) = \mathbf{3} \)</li>
+                </ul>
+                <p>Evaluamos en la sumatoria \( R_3 = f(x_1)\Delta x + f(x_2)\Delta x + f(x_3)\Delta x \):</p>
+                <div class="mb">$$ R_3 = [ \sqrt{1+1} + \sqrt{2+1} + \sqrt{3+1} ] \cdot (1) $$</div>
+                <div class="mb">$$ R_3 = [ \sqrt{2} + \sqrt{3} + \sqrt{4} ] \approx 1.4142 + 1.7321 + 2.0 $$</div>
+                <div class="hl">
+                    <div class="big">$$ R_3 \approx 5.1463 $$</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" data-index="4">
+            <div class="card">
+                <h2>📊 5. Análisis de Evaluaciones Computacionales (\(n=5\) y \(n=15\))</h2>
+                <p>Al utilizar herramientas automatizadas como GeoGebra (debido a la complejidad extrema de estas raíces sumadas), se calculan rápidamente particiones más elevadas:</p>
+                <table>
+                    <thead><tr><th>\(n\) (Rectángulos)</th><th>Aproximación por Derecha (\(R_n\))</th></tr></thead>
+                    <tbody>
+                        <tr><td>3</td><td><strong>5.1463</strong></td></tr>
+                        <tr><td>5</td><td><strong>4.9592</strong></td></tr>
+                        <tr><td>15</td><td><strong>4.7627</strong></td></tr>
+                        <tr><td>\(\infty\) (Área Exacta Limit)</td><td>\(\approx\) <strong>4.6667</strong></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="slide" data-index="5">
+            <div class="card">
+                <h2>💡 6. Conclusión de Extremos Derechos</h2>
+                <p>¿Qué se puede concluir al aumentar el número de rectángulos?</p>
+                <div class="rb">
+                    <div class="label">Respuesta Analítica</div>
+                    <p>La curva de \(f(x) = \sqrt{x+1}\) es una función estrictamente creciente en nuestro intervalo. Por tanto, evaluar las alturas en los extremos derechos de cada franja sistemáticamente sobre-estima el área debajo de la curva generada (los rectángulos sobresalen por encima del trazo real).</p>
+                    <hr style="opacity:0.2; margin: 10px 0;">
+                    <p>Al <strong>aumentar \(n\) gradualmente (\(3 \to 5 \to 15\))</strong>, el ancho común (\(\Delta x\)) de cada exceso de rectángulo se va encogiendo velozmente hacia \(0\). Por lo tanto, el margen de error positivo colapsa y el total sobreestimado decrece, empezando a converger limpiamente hacia la cifra precisa del área, la cual es \(\approx 4.6667\).</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" data-index="6">
+            <div class="card">
+                <h2>🖥️ 7. Guía para GeoGebra</h2>
+                <p>Para comprobar la respuesta y realizar el reporte gráfico final sugerido, utiliza estos comandos:</p>
+                <ul>
+                    <li><span class="step-badge">1</span> Define la función: <code>f(x) = sqrt(x + 1)</code></li>
+                    <li><span class="step-badge">2</span> Suma \(n=3\): <code>SumaDerecha(f, 0, 3, 3)</code></li>
+                    <li><span class="step-badge">3</span> Suma \(n=5\): <code>SumaDerecha(f, 0, 3, 5)</code></li>
+                    <li><span class="step-badge">4</span> Suma \(n=15\): <code>SumaDerecha(f, 0, 3, 15)</code></li>
+                    <li><span class="step-badge">5</span> Comprobación Límite de área (Integral matemática): <code>Integral(f, 0, 3)</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide" data-index="6">
+            <div class="card">
+                <h2>🖼️ Visualización de la Gráfica</h2>
+                <p>Gráfica interactiva de la función \(f(x) = \sqrt{x+1}\) aproximada mediante el área de rectángulos de Riemann (extremos derechos).</p>
+                <div style="width: 100%; height: 350px; position: relative; margin-top:1rem;">
+                    <canvas id="chartT2"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- EXERCISE 3 & 4 (Abbreviated structure for snippet clarity)     -->
+<!-- ============================================================ -->
+<!-- We inject similar structure for sections 3 and 4... -->
+
+<!-- SECTION 3 -->
+<div class="exercise-section" data-theme="2">
+    <header><div class="badge">Temática 3</div><h1>Integral Definida</h1><p>\( \int_1^8 \frac{(x^2+1)(x^2-2)}{x^{2/3}}dx \)</p></header>
+    <nav class="slide-nav" data-group="2">
+        <button class="active" data-slide="0" data-tippy-content="Paso 1: Análisis Desafiante">1. Análisis Desafiante</button>
+        <button data-slide="1" data-tippy-content="Paso 2: FOIL (Multiplicación Polinomial)">2. Numerador FOIL</button>
+        <button data-slide="2" data-tippy-content="Paso 3: División sobre Raíz Cúbica">3. División Interna</button>
+        <button data-slide="3" data-tippy-content="Paso 4: Integración por Regla de la Potencia">4. Integrar Fracciones</button>
+        <button data-slide="4" data-tippy-content="Paso 5: Ensamble de la Antiderivada">5. Unir Antiderivadas</button>
+        <button data-slide="5" data-tippy-content="Paso 6: Aplicando (T.F.C) en Extremos">6. Evaluar (T.F.C)</button>
+        <button data-slide="6" data-tippy-content="Paso 7: Software Analítico">7. GeoGebra</button>
+        <button data-slide="7" data-tippy-content="Paso 8: Evidencia Gráfica">8. Gráfica</button>
+    </nav>
+    <div class="content" data-group="2">
+        <div class="slide active" data-index="0">
+            <div class="card">
+                <h2>📋 1. Análisis Complejo</h2>
+                <p>Nuestra integral parece intimidante debido a que contiene un producto de binomios en el numerador y una raíz cúbica en el denominador. No podemos integrarla directamente en su estado actual.</p>
+                <div class="mb">$$ \int_1^8 \frac{(x^2+1)(x^2-2)}{\sqrt[3]{x^2}} \, dx $$</div>
+                <h3>Plan de simplificación:</h3>
+                <ul>
+                    <li>1️⃣ Multiplicaremos los paréntesis para obtener un único polinomio arriba.</li>
+                    <li>2️⃣ Transformaremos la raíz \(\sqrt[3]{x^2}\) a su denominación exponente fraccionario \(x^{2/3}\).</li>
+                    <li>3️⃣ Subiremos ese denominador aplicando las leyes de exponentes para dividirlo término por término.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide" data-index="1">
+            <div class="card">
+                <h2>✖️ 2. Álgebra Polinomial del Numerador</h2>
+                <p>Aplicamos la <strong>propiedad distributiva</strong> multiplicando término a término (FOIL en álgebra) a los binomios \((x^2+1)(x^2-2)\):</p>
+                <ul>
+                    <li>\( x^2 \cdot x^2 \) = \( x^4 \)</li>
+                    <li>\( x^2 \cdot (-2) \) = \( -2x^2 \)</li>
+                    <li>\( 1 \cdot x^2 \) = \( +x^2 \)</li>
+                    <li>\( 1 \cdot (-2) \) = \( -2 \)</li>
+                </ul>
+                <div class="mb">$$ = x^4 - 2x^2 + x^2 - 2 \quad \Rightarrow \quad x^4 - x^2 - 2 $$</div>
+                <p>Nuestra integral muta a la siguiente forma:</p>
+                <div class="mb cyan">$$ \int_1^8 \frac{x^4 - x^2 - 2}{x^{2/3}} \, dx $$</div>
+            </div>
+        </div>
+
+        <div class="slide" data-index="2">
+            <div class="card">
+                <h2>➗ 3. División por Potencias Racionales</h2>
+                <p>Habiendo simplificado el numerador, repartimos el denominador \(x^{2/3}\) a cada uno de los tres términos superiores. Recordemos que <span class="hint-word" data-tippy-content="Ley del cociente de la potenciación.">al dividir bases iguales, los exponentes se restan:</span> \( \frac{x^a}{x^b} = x^{a-b} \).</p>
+                <ul>
+                    <li>\( \frac{x^4}{x^{2/3}} \Rightarrow x^{4 - \frac{2}{3}} = x^{\frac{12-2}{3}} = \mathbf{x^{10/3}} \)</li><br>
+                    <li>\( -\frac{x^2}{x^{2/3}} \Rightarrow -x^{2 - \frac{2}{3}} = -x^{\frac{6-2}{3}} = \mathbf{-x^{4/3}} \)</li><br>
+                    <li>\( -\frac{2}{x^{2/3}} \Rightarrow \text{Sube con exponente negativo} = \mathbf{-2x^{-2/3}} \)</li>
+                </ul>
+                <div class="mb cyan">$$ \int_1^8 \left( x^{10/3} - x^{4/3} - 2x^{-2/3} \right) dx $$</div>
+            </div>
+        </div>
+
+        <div class="slide" data-index="3">
+            <div class="card">
+                <h2>➕ 4. Integrar con Regla de la Potencia</h2>
+                <p>Ahora podemos integrar cada término de forma fácil mediante Linealidad agregando un "+1" (\(+\frac{3}{3}\)) al exponente:</p>
+                <div class="mb">$$ \int x^n\,dx = \frac{x^{n+1}}{n+1} $$</div>
+                
+                <h3>A la Obra Término por Término:</h3>
+                <ul>
+                    <li>\( \int x^{10/3} = \frac{x^{13/3}}{13/3} \Rightarrow \mathbf{\frac{3}{13}x^{13/3}} \)</li>
+                    <li>\( \int -x^{4/3} = -\frac{x^{7/3}}{7/3} \Rightarrow \mathbf{-\frac{3}{7}x^{7/3}} \)</li>
+                    <li>\( \int -2x^{-2/3} = -2\frac{x^{1/3}}{1/3} = -2 \cdot 3x^{1/3} \Rightarrow \mathbf{-6x^{1/3}} \)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide" data-index="4">
+            <div class="card">
+                <h2>✅ 5. Función Antiderivada Ensamblada</h2>
+                <p>Juntamos las fracciones calculadas arriba. Al ser una integral <strong>definida</strong> (del 1 al 8), no ponemos la constante \(+\,C\), agregamos los corchetes de evaluación de extremos:</p>
+                <div class="mb cyan">$$ F(x) = \left[ \frac{3}{13}x^{13/3} - \frac{3}{7}x^{7/3} - 6x^{1/3} \right]_1^8 $$</div>
+                <div class="rb">
+                    <div class="label">Tip Matemático</div>
+                    <p>Evaluar con potencias fraccionarias como \(x^{a/b}\) es equivalente a sacarle la raíz "\(b\)" (cúbica en este caso) y luego elevar el resultado a la "\(a\)". Como nuestros límites son 1 y 8 (ambos tienen raíz cúbica exacta), los cálculos manuales serán muy limpios.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" data-index="5">
+            <div class="card">
+                <h2>📈 6. Teorema Fundamental (Evaluación)</h2>
+                <p>Evaluamos \(F(8) - F(1)\):</p>
+                <h3>Límite Superior X = 8</h3>
+                <p>Substituyendo: \(\frac{3}{13}(8^{13/3}) - \frac{3}{7}(8^{7/3}) - 6(8^{1/3})\)<br>
+                Sabiendo que \(8^{1/3} = \sqrt[3]{8} = \mathbf{2}\):<br>
+                \(\frac{3}{13}(2^{13}) - \frac{3}{7}(2^7) - 6(2)\) = \( (\frac{3}{13} \cdot 8192) - (\frac{3}{7} \cdot 128) - 12 \)<br>
+                \( \approx 1890.46 - 54.85 - 12 \) = <strong style="color:var(--orange)">1823.61</strong></p>
+
+                <hr style="opacity: 0.1; margin: 10px 0;">
+
+                <h3>Límite Inferior X = 1</h3>
+                <p>Substituyendo en 1 (todas las potencias dan 1):<br>
+                \(\frac{3}{13} - \frac{3}{7} - 6 \approx 0.23 - 0.42 - 6 \)</p>
+                <p>= <strong style="color:var(--orange)">-6.19</strong></p>
+                
+                <div class="hl">
+                    <p>Restamos \(F(8) - F(1)\): \(1823.61 - (-6.19)\)</p>
+                    <div class="big">Área Total ≈ 1829.80</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide" data-index="6">
+            <div class="card">
+                <h2>🖥️ 7. Guía para GeoGebra</h2>
+                <p>Pasos para comprobar el área bajo la curva de esta integral definida:</p>
+                <ul>
+                    <li><span class="step-badge">1</span> Define la función matemática (presta atención a los paréntesis): <br><code>f(x) = ((x^2 + 1) * (x^2 - 2)) / (x^(2/3))</code></li>
+                    <li><span class="step-badge">2</span> Usa el comando de integración definida entre \(a=1\) y \(b=8\): <br><code>Integral(f, 1, 8)</code></li>
+                </ul>
+                <div class="rb" style="margin-top: 1rem;">
+                    <p style="font-size: 0.95rem;">GeoGebra verificará tus esfuerzos algebraicos mostrando el área y el número <strong>1829.80</strong>.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" data-index="7">
+            <div class="card">
+                <h2>🖼️ 8. Visualización de la Gráfica</h2>
+                <p>Muestra el área bajo la curva que fue sombreada por GeoGebra para la comprobación del resultado \(\approx 1829.80\).</p>
+                <div class="geo-placeholder" id="ph_t3" style="display:none;"></div>
+                <div style="width: 100%; height: 350px; position: relative; margin-top:1rem;">
+                    <canvas id="chartT3"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 4 -->
+<div class="exercise-section" data-theme="3">
+    <header><div class="badge">Temática 4</div><h1>Aplicaciones Físicas</h1><p>\( v(t) = 3t^2 - 6t \)</p></header>
+    <nav class="slide-nav" data-group="3">
+        <button class="active" data-slide="0" data-tippy-content="Paso 1: Distancia Física real vs Desplazamiento">1. Teaming vs Desp</button>
+        <button data-slide="1" data-tippy-content="Paso 2: Calcular el Cambio de Sentido (Raíces)">2. Puntos (v=0)</button>
+        <button data-slide="2" data-tippy-content="Paso 3: Subdividendo para el Valor Absoluto">3. Subdividir</button>
+        <button data-slide="3" data-tippy-content="Paso 4: Ejecución Antiderivada">4. Evaluar Integral</button>
+        <button data-slide="4" data-tippy-content="Paso 5: Unión de la Distancia Métrica Total">5. Distancia Final</button>
+        <button data-slide="5" data-tippy-content="Paso 6: Script para Software">6. GeoGebra</button>
+        <button data-slide="6" data-tippy-content="Paso 7: Plot del Móvil">7. Gráfica</button>
+    </nav>
+    <div class="content" data-group="3">
+        <div class="slide active" data-index="0">
+            <div class="card">
+                <h2>🚗 1. Distancia vs. Desplazamiento</h2>
+                <p>En física clásica, la integral de una función de velocidad \( v(t) \) entrega la posición (desplazamiento neto). Sin embargo, nuestro ejercicio nos pide la <strong>Distancia Total Recorrida</strong>.</p>
+                <div class="wb">
+                    <p>Moverse hacia atrás anula el desplazamiento, pero <strong>sí acumula métricamente distancia</strong>. Por esto, integramos la \(\text{rapidez}\), es decir, el <span class="hint-word" data-tippy-content="Al usar valor absoluto, aseguramos matemáticamente que el área generada bajo el eje X no se sume de manera negativa.">valor absoluto</span> de la velocidad.</p>
+                </div>
+                <div class="mb">$$ D_{total} = \int_A^B |v(t)| dt = \int_0^4 |3t^2 - 6t| dt $$</div>
+            </div>
+        </div>
+
+        <div class="slide" data-index="1">
+            <div class="card">
+                <h2>✂️ 2. Puntos de Cambio de Sentido</h2>
+                <p>Para lidiar algebraicamente con el valor absoluto, debemos descubrir en qué momento el móvil frena e invierte su dirección. Evaluamos \( v(t) = 0 \):</p>
+                <div class="mb">$$ 3t^2 - 6t = 0 $$</div>
+                <p>Factorizamos por factor común \(3t\):</p>
+                <div class="mb">$$ 3t(t - 2) = 0 $$</div>
+                <p>Esto nos arroja dos raíces: \( t_1 = 0 \) y \( \mathbf{t_2 = 2} \).</p>
+                <div class="hl">
+                    <p>El móvil invierte su curso exactamente en el <strong>segundo 2</strong>, el cual está justo en medio de nuestro intervalo de evaluación \([0, 4]\).</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" data-index="2">
+            <div class="card">
+                <h2>➗ 3. Dividiendo la Integral por Tramos</h2>
+                <p>Utilizando nuestra raíz descubierta (\(t=2\)), separamos la integral absoluta en dos intergerales definidas normales (Propiedad Aditiva de Integrales):</p>
+                <div class="mb">$$ D = \int_0^2 |v(t)|\,dt \quad+\quad \int_2^4 |v(t)|\,dt $$</div>
+                <p><strong>Evaluación de Signos:</strong></p>
+                <ul>
+                    <li>Entre \(0\) y \(2\) (ej. en \(t=1\)): \(3(1)^2-6(1) = -3 \). Velocidad negativa, invertimos la ecuación integrando \( \mathbf{-v(t)} \).</li>
+                    <li>Entre \(2\) y \(4\) (ej. en \(t=3\)): \(3(3)^2-6(3) = +9 \). Velocidad positiva, integramos la ecuación norma \( \mathbf{v(t)} \).</li>
+                </ul>
+                <div class="mb cyan">$$ D = \int_0^2 -(3t^2 - 6t) dt \quad+\quad \int_2^4 (3t^2 - 6t) dt $$</div>
+            </div>
+        </div>
+
+        <div class="slide" data-index="3">
+            <div class="card">
+                <h2>➕ 4. Antiderivadas y T.F.C</h2>
+                <p>La antiderivada general es: \( \int(3t^2 - 6t)dt = \mathbf{t^3 - 3t^2} \).</p>
+                
+                <h3>Tramo 1 (Retroceso): \( -\left[ t^3 - 3t^2 \right]_0^2 \)</h3>
+                <p>Evaluamos en 2: \((2^3 - 3(2)^2) = 8 - 12 = -4\).<br>Evaluamos en 0: \(0\).</p>
+                <p>Multiplicamos por el signo negativo invertido exterior: \( \mathbf{- (-4) = 4} \).</p>
+                
+                <hr style="opacity: 0.1; margin: 10px 0;">
+
+                <h3>Tramo 2 (Avance): \( \left[ t^3 - 3t^2 \right]_2^4 \)</h3>
+                <p>Evaluamos en 4: \((4^3 - 3(4)^2) = 64 - 48 = 16\).<br>
+                Restamos la evaluación de límite inferior (en 2 nos dio \(-4\)):<br>
+                \( \mathbf{16 - (-4) = 20} \).</p>
+            </div>
+        </div>
+
+        <div class="slide" data-index="4">
+            <div class="card">
+                <h2>💯 5. Cálculando la Sumatoria Final</h2>
+                <p>Juntamos el valor absoluto derivado de ambos tramos, sumando toda el área métricamente positiva transcurrida a lo largo de los 4 segundos del recorrido.</p>
+                <div class="mb">$$ D = | \text{Área Tramo 1} | \quad+\quad | \text{Área Tramo 2} | $$</div>
+                <div class="mb">$$ D = 4 \text{ metros} \quad+\quad 20 \text{ metros} = 24 $$</div>
+                <div class="hl"><div class="big">24 metros recorridos</div></div>
+                <div class="rb">
+                    <div class="label">Contraste de Concepto</div>
+                    <p>Si quisieramos solo el desplazamiento (ignorar qué tanta gasolina se gastó moviéndose atrás y adelante), haríamos \(-4 + 20 \), y habríamos concluido erróneamente en \(16\).</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" data-index="5">
+            <div class="card">
+                <h2>🖥️ 6. Guía para GeoGebra</h2>
+                <p>Pasos computacionales para evidenciar este fenómeno en el sistema de graficación:</p>
+                <ul>
+                    <li><span class="step-badge">1</span> Define la función original: <br><code>v(x) = 3x^2 - 6x</code></li>
+                    <li><span class="step-badge">2</span> Calcula la distancia sumando áreas como rectángulos positivos: <br><code>Integral(abs(v), 0, 4)</code></li>
+                    <li><span class="step-badge">3</span> (Demostración Teórica) Calcula el desplazamiento con áreas negativas, notarás el 16: <br><code>Integral(v, 0, 4)</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide" data-index="6">
+            <div class="card">
+                <h2>🖼️ 7. Visualización de la Gráfica</h2>
+                <p>Presenta la captura que evidencia el cálculo de distancia con el uso de valor absoluto de la velocidad.</p>
+                <div class="geo-placeholder" id="ph_t4" style="display:none;"></div>
+                <div style="width: 100%; height: 350px; position: relative; margin-top:1rem;">
+                    <canvas id="chartT4"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- EXERCISE 5: SUSTENTACIÓN VIDEO                                 -->
+<!-- ============================================================ -->
+<div class="exercise-section" data-theme="4">
+    <header>
+        <div class="badge" style="background:var(--pink);">Sustentación</div>
+        <h1>Guion de Video</h1>
+        <p>Cronología para grabar el Ejercicio 4 (Máx. 8 min)</p>
+    </header>
+
+    <nav class="timeline-nav" data-group="4">
+        <div class="progress-line" style="width: 0%;"></div>
+        <button class="active" data-slide="0" data-tippy-content="Tiempo: 0:00 - 0:50 | Presentación Completa (Inglés)">1</button>
+        <button data-slide="1" data-tippy-content="Tiempo: 0:51 - 2:10 | Acercamiento al Pizarrón (Ecuación)">2</button>
+        <button data-slide="2" data-tippy-content="Tiempo: 2:11 - 4:10 | Pizarrón (Despeje y Explicación Lógica)">3</button>
+        <button data-slide="3" data-tippy-content="Tiempo: 4:11 - 6:00 | Pizarrón (Cálculos Finales y Respuesta)">4</button>
+        <button data-slide="4" data-tippy-content="Tiempo: 6:01 - 6:10 | Cámara Frontal (Despedida en Inglés)">5</button>
+    </nav>
+
+    <div class="content" data-group="4">
+        <div class="slide active" data-index="0">
+            <div class="card" style="border-left: 4px solid var(--pink);">
+                <h2>🗣️ Presentación (0:00 - 0:50)</h2>
+                <div class="hl" style="margin-bottom: 1rem;"><p style="color:var(--dim); font-size:0.85rem">A CÁMARA COMPLETA</p></div>
+                <ul>
+                    <li><strong style="color:var(--pink)">[0:00]</strong> "Hello, Good [morning/afternoon/evening], Teacher [Nombre de tu Tutor/a]."</li>
+                    <li><strong style="color:var(--pink)">[0:06]</strong> "My name is [Tu Nombre Completo]."</li>
+                    <li><strong style="color:var(--pink)">[0:13]</strong> "I am [Tu Edad] years old, and I am studying Systems Engineering."</li>
+                    <li><strong style="color:var(--pink)">[0:19]</strong> "I decided to study this career because I am passionate about technology and I love finding logical solutions to complex problems."</li>
+                    <li><strong style="color:var(--pink)">[0:27]</strong> "My experience with application exercises has allowed me to understand that integral calculus can be used to model a wide range of scientific processes..."</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide" data-index="1">
+            <div class="card" style="border-left: 4px solid var(--primary);">
+                <h2>📝 Planteamiento Físico (0:51 - 2:10)</h2>
+                <div class="hl" style="margin-bottom: 1rem;"><p style="color:var(--dim); font-size:0.85rem">ENFOCANDO TABLERO O PAPEL (ESPAÑOL)</p></div>
+                <ul>
+                    <li><strong>[0:51] "Exposición del Problema":</strong> Ahora pasaré a exponer el Ejercicio 4. El problema nos plantea un móvil con velocidad v(t) = 3t² - 6t. Nos piden calcular la "distancia total recorrida" en el intervalo de 0 a 4.</li>
+                    <li><strong>[1:21] "Justificación del Valor Absoluto":</strong> Es crucial notar que nos piden "distancia", no desplazamiento. Moverse hacia atrás anula el desplazamiento, pero la distancia siempre suma en positivo.</li>
+                    <li><strong>Acción Pizarra:</strong> Escribe la fórmula inicial: <code>D = ∫₀⁴ |3t² - 6t| dt</code> explicando que por eso usas el Valor Absoluto de la velocidad.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide" data-index="2">
+            <div class="card" style="border-left: 4px solid var(--primary);">
+                <h2>📈 Factorización y Tramos (2:11 - 4:10)</h2>
+                <div class="hl" style="margin-bottom: 1rem;"><p style="color:var(--dim); font-size:0.85rem">ENFOCANDO TABLERO O PAPEL (ESPAÑOL)</p></div>
+                <ul>
+                    <li><strong>[2:11] "Puntos Críticos":</strong> Para resolver el valor absoluto, necesito saber si el auto cambió de sentido. Resuelvo <code>3t² - 6t = 0</code>. Factorizo 3t(t - 2) = 0 y obtengo dos raíces: t=0 y t=2.</li>
+                    <li><strong>[3:01] "Romper la Integral":</strong> Como el cambio de reversa a avance ocurre en el segundo 2, rompo la integral mayor usando propiedades en dos más pequeñas: Una de [0 a 2] y la otra de [2 a 4].</li>
+                    <li><strong>Acción Pizarra:</strong> Escribe la sumatoria: <br><code>D = ∫₀² -(3t² - 6t) dt + ∫₂⁴ (3t² - 6t) dt</code></li>
+                    <li><em>Menciona que el primer tramo lleva el signo "menos" a propósito de forzar la evaluación negativa a ser positiva.</em></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide" data-index="3">
+            <div class="card" style="border-left: 4px solid var(--primary);">
+                <h2>💯 Ejecución Matemática (4:11 - 6:00)</h2>
+                <div class="hl" style="margin-bottom: 1rem;"><p style="color:var(--dim); font-size:0.85rem">ENFOCANDO TABLERO O PAPEL (ESPAÑOL)</p></div>
+                <ul>
+                    <li><strong>[4:11] "Teorema Fundamental":</strong> La antiderivada por ley de potencia es "t³ - 3t²". Evalúo el primer tramo en t=2 y da -4, multiplicado por nuestro signo es positivo: ¡4 metros en reversa!</li>
+                    <li>Luego el segundo límite de 2 a 4 nos da 16 - (-4) = 20 metros de avance.</li>
+                    <li><strong>[5:21] "Conclusión y GeoGebra":</strong> Sumo 4 + 20 y obtengo una distancia métrica total de 24 metros. Al comprobarlo en GeoGebra con el comando del integral de la función absoluta, el gráfico valida los 24m.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide" data-index="4">
+            <div class="card" style="border-left: 4px solid var(--pink);">
+                <h2>👋 Despedida (6:01 - 6:10)</h2>
+                <div class="hl" style="margin-bottom: 1rem;"><p style="color:var(--dim); font-size:0.85rem">A CÁMARA COMPLETA</p></div>
+                <div class="big" style="text-align: center; margin: 2rem 0;">
+                    <em>"That concludes my presentation. Thank you very much for your attention. Goodbye and have a nice day!"</em>
+                </div>
+                <div class="wb">
+                    <p style="text-align:center;">¡Sube el video crudo a YouTube en oculto, o a Loom, y adjunta el enlace a tu reporte final!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <button onclick="changeSlide(-1)">← Atrás</button>
+    <button onclick="changeSlide(1)">Avanzar →</button>
+</div>
+
+<footer>
+    <p>Premium UI · Cálculo Integral (100411) · UNAD</p>
+</footer>
+
+<script>
+    // Inicializar Tooltips con Tippy.js
+    tippy('[data-tippy-content]', {
+        theme: 'light-border',
+        animation: 'shift-away',
+        arrow: true,
+        placement: 'top',
+        delay: [100, 50],
+        maxWidth: 300
+    });
+
+    // Inicializar Navegador Interactiva Driver.js (Guía Turística)
+    const driver = window.driver.js.driver;
+    const tourObj = driver({
+        showProgress: true,
+        allowClose: true,
+        nextBtnText: 'Sig ›',
+        prevBtnText: '‹ Ant',
+        doneBtnText: '¡Entendido!',
+        progressText: '{{current}} de {{total}}',
+        steps: [
+            { element: '#themeTabs', popover: { title: '🗂️ Selecciona la Temática', description: 'Usa estas pestañas para cambiar rápidamente entre los 4 ejercicios asignados (Antiderivadas, Sumas de Riemann, etc).', side: 'bottom', align: 'start' } },
+            { element: '#navSteps', popover: { title: '👣 Paso a Paso', description: 'Cada temática está fragmentada de forma secuencial. Aquí observarás en qué paso o fase del cálculo te encuentras.', side: 'bottom', align: 'center' } },
+            { element: '#mainCard', popover: { title: '📝 Área de Cálculo', description: 'Aquí aparecerán las fórmulas matemáticas limpias. Presta especial atención a las palabras subrayadas, pasa tu ratón sobre ellas para descubrir glosarios emergentes.', side: 'top', align: 'center' } },
+            { element: '.bottom-nav', popover: { title: '🕹️ Navegación fluida', description: 'Usa los botones inferiores, o simplemente las teclas de flechas (← →) en tu teclado para avanzar mágicamente.', side: 'top', align: 'center' } }
+        ]
+    });
+
+    document.getElementById('btnTour').addEventListener('click', () => { tourObj.drive(); });
+
+    // JS Nav Logic
+    let currentTheme = 0;
+    const themeSlideIndexes = [0, 0, 0, 0, 0]; // Soportar 5 tabs
+    const themeTabs = document.querySelectorAll('#themeTabs button');
+    const sections = document.querySelectorAll('.exercise-section');
+
+    themeTabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const idx = parseInt(btn.dataset.theme);
+            themeSlideIndexes[currentTheme] = getCurrentSlideIndex();
+            
+            themeTabs.forEach(b => b.classList.remove('active'));
+            sections.forEach(s => s.classList.remove('active'));
+            btn.classList.add('active');
+            sections[idx].classList.add('active');
+            currentTheme = idx;
+            
+            goToSlideInGroup(idx, themeSlideIndexes[idx]);
+            if (window.MathJax && MathJax.typeset) MathJax.typeset();
+        });
+    });
+
+    function getCurrentSlideIndex() {
+        const activeSection = sections[currentTheme];
+        const slides = activeSection.querySelectorAll('.slide');
+        for (let i = 0; i < slides.length; i++) {
+            if (slides[i].classList.contains('active')) return i;
+        }
+        return 0;
+    }
+
+    function goToSlideInGroup(themeIdx, slideIdx) {
+        const section = sections[themeIdx];
+        const slides = section.querySelectorAll('.slide');
+        const navBtns = section.querySelectorAll('.slide-nav button, .timeline-nav button');
+        const progressLine = section.querySelector('.progress-line');
+        
+        if (slideIdx < 0 || slideIdx >= slides.length) return;
+        
+        slides.forEach(s => { s.classList.remove('active'); s.style.animation = 'none'; });
+        
+        // Update Nav Timeline Classes
+        navBtns.forEach((b, index) => {
+            b.classList.remove('active', 'completed');
+            if (index < slideIdx) b.classList.add('completed');
+            else if (index === slideIdx) b.classList.add('active');
+        });
+
+        // Update Nav Timeline Progress Bar Width
+        if (progressLine && navBtns.length > 1) {
+            const percentage = (slideIdx / (navBtns.length - 1)) * 100;
+            progressLine.style.width = percentage + '%';
+        }
+        
+        // trigger reflow para la animacion
+        void slides[slideIdx].offsetWidth;
+        slides[slideIdx].classList.add('active');
+        slides[slideIdx].style.animation = 'slideUp 0.4s ease forwards';
+        
+        themeSlideIndexes[themeIdx] = slideIdx;
+        
+        if (window.MathJax && MathJax.typeset) MathJax.typeset();
+    }
+
+    function changeSlide(dir) {
+        const newIdx = getCurrentSlideIndex() + dir;
+        goToSlideInGroup(currentTheme, newIdx);
+    }
+
+    document.querySelectorAll('.slide-nav button, .timeline-nav button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const slideIdx = parseInt(this.dataset.slide);
+            goToSlideInGroup(currentTheme, slideIdx);
+        });
+    });
+
+    document.addEventListener('keydown', e => {
+        if (tourObj.isActive()) return; // disable keys if tour is showing
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+    });
+    // Chart.js Auto-Graphing Logic
+    Chart.defaults.color = '#94A3B8';
+    Chart.defaults.font.family = 'Inter';
+
+    function makePoints(fn, min, max, step) {
+        let pts = [];
+        for(let i=min; i<=max; i+=step) {
+            pts.push({x: i, y: fn(i)});
+        }
+        return pts;
+    }
+
+    function createGraph(ctxId, config) {
+        const ctx = document.getElementById(ctxId).getContext('2d');
+        let scales = {
+            x: { grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { grid: { color: 'rgba(255,255,255,0.05)' } }
+        };
+        if (!config.data.labels) {
+            scales.x.type = 'linear';
+            scales.x.position = 'bottom';
+        }
+        new Chart(ctx, {
+            type: config.type || 'scatter',
+            data: config.data,
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: scales,
+                plugins: { legend: { display: config.showLegend } },
+                elements: { point: { radius: config.data.labels ? 4 : 0 } }
+            }
+        });
+    }
+
+    // Render Charts
+    setTimeout(() => {
+        // T1: Antiderivadas
+        createGraph('chartT1', {
+            data: {
+                datasets: [
+                    { label: 'f(t)', data: makePoints(x => x*x + Math.pow(1/Math.cos(x), 2), -1.4, 1.4, 0.05), borderColor: '#818CF8', showLine: true, tension: 0.4 },
+                    { label: 'F(t) Antiderivada', data: makePoints(x => Math.pow(x,3)/3 + Math.tan(x), -1.4, 1.4, 0.05), borderColor: '#34D399', showLine: true, tension: 0.4 }
+                ]
+            }, showLegend: true
+        });
+
+        // T2: Riemann
+        createGraph('chartT2', {
+            type: 'bar',
+            data: {
+                labels: [1, 2, 3],
+                datasets: [
+                    { type: 'line', label: 'f(x) = √(x+1)', data: [Math.sqrt(2), Math.sqrt(3), 2], borderColor: '#818CF8', tension: 0.4, fill: false },
+                    { type: 'bar', label: 'Sumas R₃ (Derecha)', data: [Math.sqrt(2), Math.sqrt(3), 2], backgroundColor: 'rgba(56, 189, 248, 0.4)', borderColor: '#38BDF8', borderWidth: 1 }
+                ]
+            }, showLegend: true
+        });
+
+        // T3: Integral Definida
+        createGraph('chartT3', {
+            data: {
+                datasets: [
+                    { label: 'f(x) Área (1829.80)', data: makePoints(x => ((x*x+1)*(x*x-2))/Math.pow(x, 2/3), 1, 8, 0.1), borderColor: '#FB923C', backgroundColor: 'rgba(251, 146, 60, 0.2)', fill: 'origin', showLine: true, tension: 0.4 }
+                ]
+            }, showLegend: true
+        });
+
+        // T4: Aplicaciones
+        createGraph('chartT4', {
+            data: {
+                datasets: [
+                    { label: '|v(t)| Distancia (24m)', data: makePoints(x => Math.abs(3*x*x - 6*x), 0, 4, 0.1), borderColor: '#34D399', backgroundColor: 'rgba(52, 211, 153, 0.2)', fill: 'origin', showLine: true, tension: 0.4 }
+                ]
+            }, showLegend: true
+        });
+    }, 1000); 
+</script>
+</body>
 </html>
