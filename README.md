@@ -2,6 +2,10 @@
 
 Bienvenido al repositorio de la **Presentación Interactiva de Cálculo Integral**. Este proyecto es una Single Page Application (SPA) en Vanilla Javascript orientada a desglosar de forma pedagógica, visual y ultra-detallada diversos ejercicios de cálculo diferencial e integral avanzado.
 
+### 🌐 Demo en Vivo
+Puedes acceder y navegar esta presentación hospedada de forma permamente a través de Firebase Hosting aquí:
+**[https://calculointegralwild.web.app/](https://calculointegralwild.web.app/)**
+
 ## ✨ Características Principales
 
 *   **Tema UI Premium "Glassmorphism":** Interfaz moderna y minimalista con estética de desenfoques y contrastes agradables a la vista.
